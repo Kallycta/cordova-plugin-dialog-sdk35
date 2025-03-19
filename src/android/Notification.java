@@ -30,8 +30,6 @@ import android.net.Uri;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.getcapacitor.Logger;
-import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -41,9 +39,6 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.sql.Array;
-import java.util.Arrays;
 
 
 /**
@@ -79,7 +74,6 @@ public class Notification extends CordovaPlugin {
      * Constructor.
      */
     public Notification() {
-        Logger.verbose("Notification", "NotificationNotificationNotification");
     }
 
     /**
@@ -91,7 +85,6 @@ public class Notification extends CordovaPlugin {
      * @return                  True when the action was valid, false otherwise.
      */
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Logger.verbose("Notification", "executeexecuteexecuteexecute");
         LOG.i("Notification", "action", action);
         LOG.i("Notification", "args", args);
         LOG.i("Notification", "CallbackContext", callbackContext);
@@ -102,26 +95,19 @@ public class Notification extends CordovaPlugin {
     	 * be returned in the event of an invalid action.
     	 */
     	if (this.cordova.getActivity().isFinishing()) return true;
-        Logger.verbose("Notification", "next");
 
         if (action.equals(ACTION_BEEP)) {
             this.beep(args.getLong(0));
         }
         else if (action.equals(ACTION_ALERT)) {
-            Logger.verbose("Notification", "ACTION_ALERT");
             this.alert(args.getString(0), args.getString(1), args.getString(2), callbackContext);
-            Logger.verbose("Notification", "ACTION_ALERT2");
             return true;
         }
         else if (action.equals(ACTION_CONFIRM)) {
-            Logger.verbose("Notification", "ACTION_CONFIRM");
-            Logger.verbose("Notification", args.getString(2));
             this.confirm(args.getString(0), args.getString(1), args.getString(2), callbackContext);
-            Logger.verbose("Notification", "ACTION_CONFIRM2");
             return true;
         }
         else if (action.equals(ACTION_PROMPT)) {
-            Logger.verbose("Notification", "ACTION_PROMPT");
             this.prompt(args.getString(0), args.getString(1), args.getJSONArray(2), args.getString(3), callbackContext);
             return true;
         }
@@ -148,6 +134,7 @@ public class Notification extends CordovaPlugin {
         callbackContext.success();
         return true;
     }
+
 
     //--------------------------------------------------------------------------
     // LOCAL METHODS
@@ -191,10 +178,7 @@ public class Notification extends CordovaPlugin {
      * @param callbackContext   The callback context
      */
     public synchronized void alert(final String message, final String title, final String buttonLabel, final CallbackContext callbackContext) {
-        Logger.verbose("Notification", "ACTION_ALERT_alert");
         final CordovaInterface cordova = this.cordova;
-        Logger.verbose("alert", buttonLabel);
-
         LOG.i(LOG_TAG,"buttonLabels", buttonLabel);
 
         Runnable runnable = new Runnable() {
@@ -237,17 +221,12 @@ public class Notification extends CordovaPlugin {
      */
     public synchronized void confirm(final String message, final String title, final String buttonLabels, final CallbackContext callbackContext) throws JSONException {
     	final CordovaInterface cordova = this.cordova;
-        Logger.verbose("confirm", "confirm");
-        Logger.verbose("confirm", buttonLabels.toString());
        final String delimiter = ",";
 
-        final String[] buttonLabelsModify = buttonLabels.split(delimiter);
-
-
+        final String[] buttonLabelsModify =buttonLabels.split(delimiter);
 
         Runnable runnable = new Runnable() {
             public void run() {
-                Logger.verbose("confirm", "run");
                 Builder dlg = createDialog(cordova); // new AlertDialog.Builder(cordova.getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                 dlg.setMessage(message);
                 dlg.setTitle(title);
@@ -255,7 +234,6 @@ public class Notification extends CordovaPlugin {
 
                 // First button
                 if (buttonLabelsModify.length > 0) {
-                    Logger.verbose("confirm", "buttonLabels.length() > 0");
                     try {
                         dlg.setNegativeButton(buttonLabelsModify[0],
                             new AlertDialog.OnClickListener() {
@@ -271,7 +249,6 @@ public class Notification extends CordovaPlugin {
 
                 // Second button
                 if (buttonLabelsModify.length > 1) {
-                    Logger.verbose("confirm", "buttonLabels.length() > 1");
                     try {
                         dlg.setNeutralButton(buttonLabelsModify[1],
                             new AlertDialog.OnClickListener() {
@@ -287,7 +264,6 @@ public class Notification extends CordovaPlugin {
 
                 // Third button
                 if (buttonLabelsModify.length > 2) {
-                    Logger.verbose("confirm", "buttonLabels.length() > 2");
                     try {
                         dlg.setPositiveButton(buttonLabelsModify[2],
                             new AlertDialog.OnClickListener() {
